@@ -14,3 +14,18 @@ function exportToExcel() {
   a.download = "export.csv";
   a.click();
 }
+
+function goToSpreadsheet() {
+  // Hide setup
+  document.getElementById("setup").style.display = "none";
+  // Show spreadsheet section
+  document.getElementById("spreadsheet").style.display = "block";
+
+  // Example: generate a simple table from dropdown
+  let choice = document.getElementById("option1").value;
+  let table = document.getElementById("table");
+  table.innerHTML = `
+    <tr><th>Option</th><th>Value</th></tr>
+    <tr><td>Choice 1</td><td>${choice}</td></tr>
+  `;
+}
