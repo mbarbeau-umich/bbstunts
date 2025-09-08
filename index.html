@@ -1,22 +1,50 @@
 <!-- TEST  -->
-<body>
-  <!-- Step 1: Setup Options -->
-  <div id="setup">
-    <h2>Setup Spreadsheet</h2>
-    <label for="option1">Choose an option:</label>
-    <select id="option1">
-      <option value="A">Choice A</option>
-      <option value="B">Choice B</option>
-    </select>
-    <button onclick="goToSpreadsheet()">Go</button>
-  </div>
 
-  <!-- Step 2: Spreadsheet -->
-  <div id="spreadsheet" style="display:none;">
-    <h2>Spreadsheet Preview</h2>
-    <table id="table"></table>
-    <button onclick="exportToExcel()">Export</button>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fight Setup</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+
+    <!-- Company Logo -->
+    <div class="logo">
+      <img src="logo.png" alt="Company Logo">
+    </div>
+
+    <!-- Page Title -->
+    <h1 class="title">Fight Documentation Setup</h1>
+
+    <!-- Fight Setup Card -->
+    <div class="card">
+      <!-- Fight Name -->
+      <label for="fightName">Fight Name</label>
+      <input type="text" id="fightName" placeholder="Enter fight name">
+
+      <!-- Number of Fighters -->
+      <label for="numFighters">Number of Fighters</label>
+      <select id="numFighters" onchange="updateFighterDropdowns()">
+        <option value="2">2 Fighters</option>
+        <option value="3">3 Fighters</option>
+        <option value="4">4 Fighters</option>
+        <option value="5">5 Fighters</option>
+      </select>
+
+      <!-- Fighter Options -->
+      <div id="fighterOptions"></div>
+
+      <!-- Action Buttons -->
+      <div class="buttons">
+        <button onclick="importSpreadsheet()">Import Spreadsheet</button>
+        <button class="primary" onclick="goToSpreadsheet()">Go</button>
+      </div>
+    </div>
   </div>
 
   <script src="script.js"></script>
 </body>
+</html>

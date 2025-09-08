@@ -15,17 +15,39 @@ function exportToExcel() {
   a.click();
 }
 
-function goToSpreadsheet() {
-  // Hide setup
-  document.getElementById("setup").style.display = "none";
-  // Show spreadsheet section
-  document.getElementById("spreadsheet").style.display = "block";
+// Updates fighter dropdowns when number of fighters changes
+function updateFighterDropdowns() {
+  const num = document.getElementById("numFighters").value;
+  const container = document.getElementById("fighterOptions");
+  container.innerHTML = "";
 
-  // Example: generate a simple table from dropdown
-  let choice = document.getElementById("option1").value;
-  let table = document.getElementById("table");
-  table.innerHTML = `
-    <tr><th>Option</th><th>Value</th></tr>
-    <tr><td>Choice 1</td><td>${choice}</td></tr>
-  `;
+  for (let i = 1; i <= num; i++) {
+    const label = document.createElement("label");
+    label.className = "fighter-label";
+    label.textContent = `Fighter ${i}`;
+
+    const select = document.createElement("select");
+    select.innerHTML = `
+      <option value="Option1">Option 1</option>
+      <option value="Option2">Option 2</option>
+      <option value="Option3">Option 3</option>
+    `;
+
+    container.appendChild(label);
+    container.appendChild(select);
+  }
 }
+
+// Placeholder for import functionality
+function importSpreadsheet() {
+  alert("Import functionality not implemented yet.");
+}
+
+// Placeholder for moving to spreadsheet view
+function goToSpreadsheet() {
+  alert("Go button clicked! This will show the spreadsheet view.");
+}
+
+// Initialize defaults
+updateFighterDropdowns();
+
