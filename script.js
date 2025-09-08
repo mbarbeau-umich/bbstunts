@@ -1,53 +1,67 @@
-// TEST
-function exportToExcel() {
-  let data = [
-    ["Option", "Value"],
-    ["Choice 1", document.getElementById("option1").value]
-  ];
-  
-  let csv = data.map(row => row.join(",")).join("\n");
-  let blob = new Blob([csv], { type: "text/csv" });
-  let url = URL.createObjectURL(blob);
-  
-  let a = document.createElement("a");
-  a.href = url;
-  a.download = "export.csv";
-  a.click();
-}
+// function goToSpreadsheet() {
+//   const fightName = document.getElementById("fightName").value || "Untitled Fight";
+//   const numFighters = parseInt(document.getElementById("numFighters").value);
 
-// Updates fighter dropdowns when number of fighters changes
-function updateFighterDropdowns() {
-  const num = document.getElementById("numFighters").value;
+//   // Placeholder fighter options
+//   const fighterOptions = Array(numFighters).fill(2);
+
+//   // Save setup in localStorage
+//   localStorage.setItem("fightTitle", fightName);
+//   localStorage.setItem("numFighters", numFighters);
+//   localStorage.setItem("fighterOptions", JSON.stringify(fighterOptions));
+//   localStorage.setItem("author", "Brothers Barbeau");
+
+//   // Redirect
+//   window.location.href = "spreadsheet.html";
+// }
+
+
+function updateFighterOptions() {
+  const numFighters = parseInt(document.getElementById("numFighters").value);
   const container = document.getElementById("fighterOptions");
-  container.innerHTML = "";
 
-  for (let i = 1; i <= num; i++) {
+  container.innerHTML = ""; // clear old ones
+
+  for (let i = 0; i < numFighters; i++) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "fighter-option";
+
     const label = document.createElement("label");
-    label.className = "fighter-label";
-    label.textContent = `Fighter ${i}`;
+    label.innerText = `Fighter ${i + 1} – Hands: `;
 
-    const select = document.createElement("select");
-    select.innerHTML = `
-      <option value="Option1">Option 1</option>
-      <option value="Option2">Option 2</option>
-      <option value="Option3">Option 3</option>
-    `;
+    const input = document.createElement("input");
+    input.type = "number";
+    input.min = 1;
+    input.max = 2;
+    input.value = 1;
+    input.id = `fighter${i + 1}Hands`;
 
-    container.appendChild(label);
-    container.appendChild(select);
+    wrapper.appendChild(label);
+    wrapper.appendChild(input);
+    container.appendChild(wrapper);
   }
 }
 
-// Placeholder for import functionality
-function importSpreadsheet() {
-  alert("Import functionality not implemented yet.");
-}
-
-// Placeholder for moving to spreadsheet view
 function goToSpreadsheet() {
-  alert("Go button clicked! This will show the spreadsheet view.");
+  const fightName = document.getElementById("fightName").value || "Untitled Fight";
+  const numFighters = parseInt(document.getElementById("numFighters").value);
+
+  // Collect hand count for each fighter
+  const fighterOptions = [];
+  for (let i = 0; i < numFighters; i++) {
+    const val = parseInt(document.getElementById(`fighter${i + 1}Hands`).value);
+    fighterOptions.push(val);
+  }
+
+  // Save to localStorage
+  localStorage.setItem("fightTitle", fightName);
+  localStorage.setItem("numFighters", numFighters);
+  localStorage.setItem("fighterOptions", JSON.stringify(fighterOptions));
+  localStorage.setItem("author", "Brothers Barbeau");
+
+  // Redirect
+  window.location.href = "spreadsheet.html";
 }
 
-// Initialize defaults
-updateFighterDropdowns();
-
+// Initialize with default (2 fighters)
+window.onload = updateFighterOptions;

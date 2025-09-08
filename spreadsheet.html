@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spreadsheet Editor</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-left">
+      <img src="resources/BB_logo.png" alt="Logo">
+    </div>
+    <div class="header-center">
+      <h2>Fight Documentation App</h2>
+    </div>
+    <div class="header-right">
+      <button class="primary" onclick="exportSpreadsheet()">Export</button>
+    </div>
+  </header>
+
+  <div class="spreadsheet-container">
+    <table id="spreadsheetTable" contenteditable="true"></table>
+  </div>
+
+<!-- 1. First load SheetJS library (from CDN) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<!-- 2. Then load your own spreadsheet logic -->
+<script src="spreadsheet.js"></script>
+
+
+  
+</body>
+</html>
