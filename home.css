@@ -31,8 +31,6 @@
   text-align: center;
 }
 
-
-
 body {
   font-family: Arial, sans-serif;
   background: #f9f9f9;
@@ -51,14 +49,16 @@ body {
 }
 
 .logo {
+  display: block;
   max-height: 80px;
-  margin-bottom: 10px;
+  max-width: 100%;
+  margin: 0 auto 10px auto; /* center horizontally, margin bottom 10px */
 }
 
 h1 { margin-bottom: 20px; }
 
 label, input, select {
-  display: block;
+  display: block;  /* keep inputs and labels block */
   margin: 10px auto;
   font-size: 1rem;
 }
@@ -69,6 +69,7 @@ input, select {
   border: 1px solid #ccc;
   border-radius: 8px;
 }
+
 
 button {
   margin: 10px;
