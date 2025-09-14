@@ -129,3 +129,26 @@ th { background: #f4f4f4; }
   font-weight: bold;
   text-align: center;
 }
+
+
+/* secondary button (add row) */
+button.secondary {
+  background: #eee;
+  color: #333;
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+}
+button.secondary:hover {
+  background: #ddd;
+}
+
+/*  */
+
+.cell-dropdown {
+  width: 100%;
+  padding: 6px;
+  border: none;
+  background: transparent;
+  font-size: 0.9rem;
+}
