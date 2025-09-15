@@ -1,3 +1,4 @@
+/* FOOTER */
 .footer {
   margin-top: 30px;
   text-align: center;
@@ -13,8 +14,9 @@
 .footer a:hover {
   text-decoration: underline;
 }
+/* FOOTER --> END */
 
-/* Keep fighters inline */
+/* FIGHT OPTIONS */
 .fighter-option {
   display: flex;
   align-items: center;
@@ -30,6 +32,8 @@
   border-radius: 6px;
   text-align: center;
 }
+/* FIGHT OPTIONS --> END*/
+
 
 body {
   font-family: Arial, sans-serif;
@@ -70,7 +74,7 @@ input, select {
   border-radius: 8px;
 }
 
-
+/* BUTTONs */
 button {
   margin: 10px;
   padding: 10px 20px;
@@ -82,14 +86,15 @@ button {
 
 button.primary { background: #4CAF50; color: white; }
 button.secondary { background: #eee; }
+/* BOTTONs --> END */
 
-footer {
+/* footer {
   margin-top: 20px;
   font-size: 0.9rem;
   color: #555;
-}
+} */
 
-/* Header */
+/* HEADER */
 .app-header {
   display: flex;
   align-items: center;
@@ -101,30 +106,26 @@ footer {
 }
 .app-header img { max-height: 50px; }
 .app-header h2 { margin: 0; }
+/* HEADER --> END */
 
-/* Spreadsheet Table */
-.spreadsheet-container {
-  padding: 20px;
-}
-
-table {
+/* table {
   border-collapse: collapse;
   width: 100%;
   text-align: center;
   background: #fff;
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-}
+} */
 
-th, td {
+/* th, td {
   border: 1px solid #ccc;
   padding: 12px;
   min-width: 80px;
 }
 
-th { background: #f4f4f4; }
+th { background: #f4f4f4; } */
 
-.table-title {
+/* .table-title {
   font-size: 1.5em;
   font-weight: bold;
   text-align: center;
-}
+} */

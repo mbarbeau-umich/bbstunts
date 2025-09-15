@@ -1,21 +1,3 @@
-// function goToSpreadsheet() {
-//   const fightName = document.getElementById("fightName").value || "Untitled Fight";
-//   const numFighters = parseInt(document.getElementById("numFighters").value);
-
-//   // Placeholder fighter options
-//   const fighterOptions = Array(numFighters).fill(2);
-
-//   // Save setup in localStorage
-//   localStorage.setItem("fightTitle", fightName);
-//   localStorage.setItem("numFighters", numFighters);
-//   localStorage.setItem("fighterOptions", JSON.stringify(fighterOptions));
-//   localStorage.setItem("author", "Brothers Barbeau");
-
-//   // Redirect
-//   window.location.href = "spreadsheet.html";
-// }
-
-
 function updateFighterOptions() {
   const numFighters = parseInt(document.getElementById("numFighters").value);
   const container = document.getElementById("fighterOptions");
@@ -42,6 +24,7 @@ function updateFighterOptions() {
   }
 }
 
+// FUNCTION --> go to spreadsheet
 function goToSpreadsheet() {
   const fightName = document.getElementById("fightName").value || "Untitled Fight";
   const numFighters = parseInt(document.getElementById("numFighters").value);
