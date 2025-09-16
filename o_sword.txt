@@ -1,0 +1,5 @@
+Punch
+Block
+Parry
+Slash
+Thrust

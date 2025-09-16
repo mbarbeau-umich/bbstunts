@@ -1,29 +1,89 @@
+let footworkOptions = [];
+let handOptions = [];
+let eOptions = [];
 
 /* 
---- Dropdown option sets ---
-
+Load dropdown option sets ---
 */
-const footworkOptions = ["", "Advance", "Retreat", "Cross Over Advance", "Cross Over Retreat", "Pass Forward", "Pass Back"];
-const handOptions = ["", "Punch", "Block", "Parry", "Slash", "Thrust"];
-const eOptions = ["", "←", "→", "←→", "→←"];
+async function loadOptions() {
+  try {
+    const [footworkRes, handRes, eRes] = await Promise.all([
+      fetch("o_footwork.txt"),
+      fetch("o_sword.txt"),
+      fetch("o_e.txt")
+    ]);
 
-function createDropdown(options) {
-    const select = document.createElement("select");
-    options.forEach(opt => {
-        const o = document.createElement("option");
-        o.value = opt;
-        o.textContent = opt;
-        select.appendChild(o);
-    });
-    return select;
-}
+    // Convert to arrays (one item per line)
+    const [footworkText, handText, eText] = await Promise.all([
+      footworkRes.text(),
+      handRes.text(),
+      eRes.text()
+    ]);
+
+    footworkOptions = [""].concat(
+      footworkText.split(/\r?\n/).map(s => s.trim()).filter(Boolean)
+    );
+    handOptions = [""].concat(
+      handText.split(/\r?\n/).map(s => s.trim()).filter(Boolean)
+    );
+    eOptions = [""].concat(
+      eText.split(/\r?\n/).map(s => s.trim()).filter(Boolean)
+    );
+
+    console.log("Options loaded:", { footworkOptions, handOptions, eOptions });
+  } catch (err) {
+    console.error("Error loading option files:", err);
+
+    // FALLBACK: sensible defaults so UI still works even if fetch fails
+    footworkOptions = ["", "Advance", "Retreat", "Cross Over Advance", "Cross Over Retreat", "Pass Forward", "Pass Back"];
+    handOptions = ["", "Punch", "Block", "Parry", "Slash", "Thrust"];
+    eOptions = ["", "←", "→", "←→", "→←"];
+
+    console.log("Using default option sets as fallback.");
+  }
+} // **************************************************************************************
 
 /* 
+Generates drop down item based on a given option list
+*/
+let dropdownCounter = 0; // ensure unique datalist IDs
+function createDropdown(options) {
+  dropdownCounter++;
+  const listId = "dropdownList_" + dropdownCounter;
 
+  // Create the input field that will use the datalist
+  const input = document.createElement("input");
+  input.setAttribute("list", listId);
+  input.setAttribute("class", "dropdown-input");
 
+  // Create the datalist element
+  const datalist = document.createElement("datalist");
+  datalist.id = listId;
+
+  // Populate datalist with options
+  options.forEach(opt => {
+    const option = document.createElement("option");
+    option.value = opt;
+    datalist.appendChild(option);
+  });
+
+  // Wrap input + datalist in a container so they stay together
+  const wrapper = document.createElement("div");
+  wrapper.appendChild(input);
+  wrapper.appendChild(datalist);
+
+  return wrapper;
+} // **************************************************************************************
+
+/* 
+Constructs the table based on the selected configuration/fighter options
 */
 function buildSpreadsheet() {
   const table = document.getElementById("spreadsheetTable");
+
+  // Make sure table is NOT editable (remove any leftover attribute)
+  table.removeAttribute("contenteditable");
+  table.contentEditable = "false";
 
   const title = localStorage.getItem("fightTitle") || "Demo Fight";
   const numFighters = parseInt(localStorage.getItem("numFighters")) || 2;
@@ -41,14 +101,30 @@ function buildSpreadsheet() {
     totalCols = fighterOptions.reduce((a, b) => a + b + 2, 0); // footwork + {e} + hands
   }
 
-  // --- Row 1: Title, Author, Date ---
+  // --- Row 1: Author (left), Title (center), Date (right) ---
   const headerRow = table.insertRow();
+  
+  const authorCell = headerRow.insertCell();
+  authorCell.innerText = `Author(s): ${author}`;
+  authorCell.style.textAlign = "left";
+  authorCell.style.borderBottom = "2px solid black";
+  authorCell.style.padding = "8px";
+  authorCell.contentEditable = "true"; // editable
+  
   const titleCell = headerRow.insertCell();
-  titleCell.colSpan = totalCols;
-  titleCell.innerHTML = `<strong>${title}</strong> &nbsp;&nbsp;&nbsp;&nbsp; Author: ${author} &nbsp;&nbsp;&nbsp;&nbsp; Date: ${dateStr}`;
+  titleCell.colSpan = totalCols - 2; // take up middle space
+  titleCell.innerHTML = `<strong>${title}</strong>`;
   titleCell.style.textAlign = "center";
   titleCell.style.borderBottom = "2px solid black";
   titleCell.style.padding = "8px";
+  titleCell.contentEditable = "true"; // editable
+  
+  const dateCell = headerRow.insertCell();
+  dateCell.innerText = dateStr;
+  dateCell.style.textAlign = "right";
+  dateCell.style.borderBottom = "2px solid black";
+  dateCell.style.padding = "8px";
+
 
   // --- Spacer row ---
   const spacerRow = table.insertRow();
@@ -65,6 +141,7 @@ function buildSpreadsheet() {
     f1.innerText = "Fighter 1";
     f1.style.border = "2px solid black";
     f1.style.textAlign = "center";
+    f1.contentEditable = "true"; 
 
     const eCell = fighterRow.insertCell();
     eCell.rowSpan = 2;
@@ -77,6 +154,7 @@ function buildSpreadsheet() {
     f2.innerText = "Fighter 2";
     f2.style.border = "2px solid black";
     f2.style.textAlign = "center";
+    f2.contentEditable = "true"; 
   } else {
     for (let i = 0; i < numFighters; i++) {
       const f = fighterRow.insertCell();
@@ -84,68 +162,97 @@ function buildSpreadsheet() {
       f.innerText = `Fighter ${i + 1}`;
       f.style.border = "2px solid black";
       f.style.textAlign = "center";
+      f.contentEditable = "true"; 
     }
   }
 
   // --- Sub-header row ---
   const subHeaderRow = table.insertRow();
-  const colTypes = []; // keep track of column type for later row creation
+  const colTypes = []; // track column types
 
   if (numFighters === 2) {
-    ["Footwork", ...Array.from({length: fighterOptions[0]}, (_, i) => `Hand ${i+1}`)]
+    ["Footwork", ...Array.from({ length: fighterOptions[0] }, (_, i) => `Hand ${i + 1}`)]
       .forEach(c => {
         const cell = subHeaderRow.insertCell();
         cell.innerText = c;
         colTypes.push(c.startsWith("Hand") ? "hand" : "footwork");
         cell.style.border = "1px solid gray";
         cell.style.textAlign = "center";
+        cell.contentEditable = "true";
       });
 
     colTypes.push("e"); // shared {e}
 
-    ["Footwork", ...Array.from({length: fighterOptions[1]}, (_, i) => `Hand ${i+1}`)]
+    ["Footwork", ...Array.from({ length: fighterOptions[1] }, (_, i) => `Hand ${i + 1}`)]
       .forEach(c => {
         const cell = subHeaderRow.insertCell();
         cell.innerText = c;
         colTypes.push(c.startsWith("Hand") ? "hand" : "footwork");
         cell.style.border = "1px solid gray";
         cell.style.textAlign = "center";
+        cell.contentEditable = "true";
       });
   } else {
     fighterOptions.forEach(hands => {
-      ["Footwork", "{e}", ...Array.from({length: hands}, (_, i) => `Hand ${i+1}`)]
+      ["Footwork", "{e}", ...Array.from({ length: hands }, (_, i) => `Hand ${i + 1}`)]
         .forEach(c => {
           const cell = subHeaderRow.insertCell();
           cell.innerText = c;
           colTypes.push(c === "{e}" ? "e" : (c.startsWith("Hand") ? "hand" : "footwork"));
           cell.style.border = "1px solid gray";
           cell.style.textAlign = "center";
+          cell.contentEditable = "false";
         });
     });
   }
 
-  // --- Example blank rows with dropdowns ---
+  // --- Example blank rows (dropdowns only, no contentEditable on td) ---
   for (let r = 0; r < 10; r++) {
     const row = table.insertRow();
     for (let c = 0; c < totalCols; c++) {
       const cell = row.insertCell();
-      cell.style.border = "1px solid gray";
 
+      // ensure td itself is NOT editable
+      cell.contentEditable = "false";
+      cell.style.border = "1px solid gray";
+      cell.style.padding = "4px";
+
+      // append the dropdown wrapper (createDropdown returns a wrapper DIV with input + datalist)
       if (colTypes[c] === "footwork") {
-        cell.appendChild(createDropdown(footworkOptions));
+        const wrapper = createDropdown(footworkOptions);
+        // make the actual input fill the cell
+        const input = wrapper.querySelector("input[list]");
+        if (input) {
+          input.style.width = "100%";
+          input.style.boxSizing = "border-box";
+        }
+        cell.appendChild(wrapper);
       } else if (colTypes[c] === "hand") {
-        cell.appendChild(createDropdown(handOptions));
+        const wrapper = createDropdown(handOptions);
+        const input = wrapper.querySelector("input[list]");
+        if (input) {
+          input.style.width = "100%";
+          input.style.boxSizing = "border-box";
+        }
+        cell.appendChild(wrapper);
       } else if (colTypes[c] === "e") {
-        cell.appendChild(createDropdown(eOptions));
+        const wrapper = createDropdown(eOptions);
+        const input = wrapper.querySelector("input[list]");
+        if (input) {
+          input.style.width = "100%";
+          input.style.boxSizing = "border-box";
+        }
+        cell.appendChild(wrapper);
+      } else {
+        // unknown type: keep non-editable blank
+        cell.innerText = "";
       }
     }
   }
-}
-
+} // **************************************************************************************
 
 /* 
-Export spreadsheet to an excel (.xlsx) file
-
+Exports the table to an excel (.xlsx) file
 */
 function exportSpreadsheet() {
   const table = document.getElementById("spreadsheetTable");
@@ -155,13 +262,24 @@ function exportSpreadsheet() {
   for (let row of table.rows) {
     const rowData = [];
     for (let cell of row.cells) {
-      // If cell has a dropdown, export the selected value
-      const select = cell.querySelector("select");
-      if (select) {
-        rowData.push(select.options[select.selectedIndex]?.text || "");
-      } else {
-        rowData.push(cell.innerText.trim());
+      let value = "";
+
+      // If the cell has a datalist-based input
+      const input = cell.querySelector("input[list]");
+      if (input) {
+        value = input.value.trim(); // either typed or selected option
       }
+      // If the cell has a <select> (legacy case)
+      else {
+        const select = cell.querySelector("select");
+        if (select) {
+          value = select.options[select.selectedIndex]?.text || "";
+        } else {
+          value = cell.innerText.trim();
+        }
+      }
+
+      rowData.push(value);
     }
     sheetData.push(rowData);
   }
@@ -173,8 +291,19 @@ function exportSpreadsheet() {
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Fight Sheet");
 
-  // Ask user for filename
-  let filename = prompt("Enter filename for export:", "fight_documentation.xlsx");
+  // --- Grab fight title from first row, center cell ---
+  let fightTitle = "Fight";
+  if (table.rows.length > 0) {
+    const headerRow = table.rows[0];
+    const middleCellIndex = Math.floor(headerRow.cells.length / 2);
+    fightTitle = headerRow.cells[middleCellIndex].innerText.trim() || "Fight";
+  }
+
+  // Sanitize filename
+  fightTitle = fightTitle.replace(/[^a-z0-9_\-]/gi, "_");
+
+  // Suggest filename to user
+  let filename = prompt("Enter filename for export:", `SPAR_${fightTitle}.xlsx`);
   if (!filename) return;
 
   if (!filename.endsWith(".xlsx")) {
@@ -184,37 +313,54 @@ function exportSpreadsheet() {
   XLSX.writeFile(wb, filename);
 }
 
-
-
+/*
+Adds a BLANK row to the bottom of the table with the same formatting as the previous bottom row
+*/
 function addRow() {
   const table = document.getElementById("spreadsheetTable");
   if (table.rows.length < 1) return; // no rows yet
 
-  // Insert a new row at the end
+  const templateRowIndex = table.rows.length - 2; // last data row index
+  const templateRow = table.rows[templateRowIndex];
   const newRow = table.insertRow();
-
-  // Get the last non-title row (so we don’t copy the header row formatting)
-  const templateRow = table.rows[table.rows.length - 2];
 
   for (let c = 0; c < templateRow.cells.length; c++) {
     const newCell = newRow.insertCell();
+    newCell.contentEditable = "false";
+    newCell.style.cssText = templateRow.cells[c].style.cssText || "";
 
-    // Copy styles from the template cell
-    const templateCell = templateRow.cells[c];
-    newCell.className = templateCell.className;
-    newCell.style.cssText = templateCell.style.cssText;
-
-    // If the template cell contains a dropdown, clone it
-    const dropdown = templateCell.querySelector("select");
-    if (dropdown) {
-      const clone = dropdown.cloneNode(true); // deep copy
-      clone.value = ""; // reset to blank
-      newCell.appendChild(clone);
-    } else {
-      // fallback: just empty text cell
-      newCell.innerText = "";
+    // If template had an input[list], clone logic: find its datalist id and options
+    const templateInput = templateRow.cells[c].querySelector("input[list]");
+    if (templateInput) {
+      const listId = templateInput.getAttribute("list");
+      const datalist = document.getElementById(listId);
+      const options = datalist ? Array.from(datalist.options).map(o => o.value) : [];
+      const wrapper = createDropdown(options);
+      const input = wrapper.querySelector("input[list]");
+      if (input) { input.style.width = "100%"; input.style.boxSizing = "border-box"; }
+      newCell.appendChild(wrapper);
+      continue;
     }
-  }
-}
 
-buildSpreadsheet();
+    // legacy select handling
+    const templateSelect = templateRow.cells[c].querySelector("select");
+    if (templateSelect) {
+      const clone = templateSelect.cloneNode(true);
+      clone.value = "";
+      newCell.appendChild(clone);
+      continue;
+    }
+
+    // default blank
+    newCell.innerText = "";
+  }
+} // **************************************************************************************
+
+/* 
+build the spreadsheet only after the options are loaded and DOM is ready
+*/
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadOptions();      // wait for .txt files (or fallback)
+  buildSpreadsheet();       // now safe to build the table with loaded options
+}); // **************************************************************************************
+

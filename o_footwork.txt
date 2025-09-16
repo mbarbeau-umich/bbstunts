@@ -1,0 +1,6 @@
+Advance
+Retreat
+Cross Over Advance
+Cross Over Retreat
+Pass Forward
+Pass Back

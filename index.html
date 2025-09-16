@@ -10,32 +10,41 @@
   <img src="BB_logo.png" class="logo" alt="Company Logo">
 
   <!-- Spreadsheet / Fight Options -->
-  <h1>Setup Fight</h1>
-    <label for="fightName">Fight Name:</label>
-    <input type="text" id="fightName" placeholder="Enter fight title">
+  <h1>SPAR</h1>
+  <h2>Stunt Planning And Recording</h2>
 
-    <label for="numFighters">Number of Fighters:</label>
-    <input type="number" id="numFighters" min="2" max="5" value="2" onchange="updateFighterOptions()">
+  <label for="author">Author(s):</label>
+  <input type="text" id="author" placeholder="Enter author name(s)">
 
-    <div id="fighterOptions"></div>
+  <label for="fightName">Fight Name:</label>
+  <input type="text" id="fightName" placeholder="Enter fight title">
 
+  <label for="numFighters">Number of Fighters:</label>
+  <input type="number" id="numFighters" min="2" max="5" value="2" onchange="updateFighterOptions()">
 
-    <div id="fighterOptions"></div>
+  <div id="fighterOptions"></div>
 
-    <button class="primary" onclick="goToSpreadsheet()">Go</button>
-    <button class="secondary">Import Spreadsheet</button>
+  <button class="primary" onclick="goToSpreadsheet()">Go</button>
+  <!-- <button class="secondary">Import Spreadsheet</button> -->
+   
+  <div style="text-align: center; margin-top: 4px;">
+    <a href="help.html" target="_blank" style="font-size: 0.85em; text-decoration: underline; color: #4CAF50;">
+      Help / About
+    </a>
   </div>
 
-  <!-- Footer / Attribution -->
-  <footer class="footer">
-    <p><strong>Brothers Barbeau Stunt Team</strong></p>
-    <p>Produced by the Brothers Barbeau</p>
-    <p>
-      <a href="mailto:thebrothersbarbeau@gmail.com">thebrothersbarbeau@gmail.com</a> | 
-      <a href="https://bbstunts.com" target="_blank">Website</a>
-    </p>
-  </footer>
+</div>
 
-  <script src="index.js"></script>
+<!-- Footer / Attribution -->
+<footer class="footer">
+  <p><strong>Brothers Barbeau Stunt Team</strong></p>
+  <p>Produced by the Brothers Barbeau</p>
+  <p>
+    <a href="mailto:thebrothersbarbeau@gmail.com">thebrothersbarbeau@gmail.com</a> |
+    <a href="https://bbstunts.com" target="_blank">Website</a>
+  </p>
+</footer>
+
+<script src="index.js"></script>
 </body>
 </html>

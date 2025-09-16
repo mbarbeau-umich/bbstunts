@@ -1,36 +1,44 @@
 <!-- cmd + shift + V ==> preview .md file -->
+# SPAR – Stunt Planning And Recording
 
-# Choreograph, Document --> Website name
+**SPAR** is a web-based tool designed to help choreograph, document, and log fight sequences for stunts, including footwork, hand moves, and stage directions. It allows stunt coordinators and teams to plan fights, track moves, and export the data to Excel for sharing or archiving.
 
-Purpose:
+---
 
-How to Use:
+## Table of Contents
 
-Feedback:
+- [Authors](#authors)  
+- [Purpose](#purpose)  
+- [Installation](#installation)  
+- [Usage](#usage)  
+- [Features](#features)  
+- [Contributing](#contributing)  
+- [Feedback / Bugs](#feedback--bugs)  
+- [License](#license)  
 
+---
 
-## Brothers Barbeau Stunt Team
+## Authors
 
- * [bbstunts.com](https://bbstunts.com)
+This tool was created and maintained by the **Brothers Barbeau Stunt Team**.  
 
+- Website: [bbstunts.com](https://bbstunts.com)  
+- Email: [thebrothersbarbeau@gmail.com](mailto:thebrothersbarbeau@gmail.com)
 
-Marcellin Barbeau, <mbarbeau@umich.edu>
+---
 
-## Projects (found on the EECS 281 website + Canvas)
+## Purpose
 
+SPAR is intended to streamline fight choreography documentation, enabling stunt teams to:
 
-## Git Usage
+- Record fight sequences in a structured spreadsheet.
+- Track individual fighter moves including footwork, hands, and stage directions.
+- Export spreadsheets for rehearsal notes or production records.
 
-```
-git clone git@github.com:mbarbeau-umich/eecs-281.git
-```
+---
 
-## Other Shit
-Finish this maybe...
+## Installation
 
-### Important Locations
-
-```
-BLANK
-```
-
+1. Clone or download the repository.  
+   ```bash
+   git clone https://github.com/yourusername/SPAR.git

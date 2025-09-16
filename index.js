@@ -26,6 +26,7 @@ function updateFighterOptions() {
 
 // FUNCTION --> go to spreadsheet
 function goToSpreadsheet() {
+  const author = document.getElementById("author").value || "Unknown";
   const fightName = document.getElementById("fightName").value || "Untitled Fight";
   const numFighters = parseInt(document.getElementById("numFighters").value);
 
@@ -40,7 +41,7 @@ function goToSpreadsheet() {
   localStorage.setItem("fightTitle", fightName);
   localStorage.setItem("numFighters", numFighters);
   localStorage.setItem("fighterOptions", JSON.stringify(fighterOptions));
-  localStorage.setItem("author", "Brothers Barbeau");
+  localStorage.setItem("author", author);
 
   // Redirect
   window.location.href = "spreadsheet.html";
