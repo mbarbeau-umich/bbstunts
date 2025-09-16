@@ -94,14 +94,37 @@ footer {
 .app-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  background: #fff;
+  justify-content: center; /* center the header-center div */
+  position: relative;      /* allows absolute positioning of left/right items */
   padding: 10px 20px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   margin-bottom: 20px;
+  background: #fff;
 }
-.app-header img { max-height: 50px; }
-.app-header h2 { margin: 0; }
+
+.app-header img {
+  max-height: 50px;
+}
+
+.header-left,
+.header-right {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.header-left {
+  left: 20px;
+}
+
+.header-right {
+  right: 20px;
+}
+
+.header-center h2 {
+  margin: 0;
+  font-weight: bold;
+}
 
 /* Spreadsheet Table */
 .spreadsheet-container {
