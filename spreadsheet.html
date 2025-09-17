@@ -9,8 +9,8 @@
   <header class="app-header">
     <div class="header-left">
       <img src="BB_logo.png" class="logo" alt="Company Logo">
-
     </div>
+
     <div class="header-center">
       <h2>SPAR</h2>
     </div>
@@ -24,12 +24,15 @@
   </div>
 
   <div class="spreadsheet-container">
-    <table id="spreadsheetTable" contenteditable="true"></table>
     <button class="secondary" onclick="addRow()">+ Add Row</button>
   </div>
 
 <!-- 1. First load SheetJS library (from CDN) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script> -->
+
+<!-- Load ExcelJS (needed for your new exportSpreadsheet) -->
+<script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
+
 
 <!-- 2. Then load your own spreadsheet logic -->
 <script src="spreadsheet.js"></script>

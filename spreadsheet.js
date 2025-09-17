@@ -46,42 +46,39 @@ async function loadOptions() {
 /* 
 Generates drop down item based on a given option list
 */
-let dropdownCounter = 0; // ensure unique datalist IDs
+let dropdownCounter = 0;
 function createDropdown(options) {
   dropdownCounter++;
   const listId = "dropdownList_" + dropdownCounter;
 
-  // Create the input field that will use the datalist
   const input = document.createElement("input");
   input.setAttribute("list", listId);
-  input.setAttribute("class", "dropdown-input");
+  input.className = "cell-dropdown";
+  input.autocomplete = "off";
+  input.value = "";
 
-  // Create the datalist element
   const datalist = document.createElement("datalist");
   datalist.id = listId;
-
-  // Populate datalist with options
   options.forEach(opt => {
-    const option = document.createElement("option");
-    option.value = opt;
-    datalist.appendChild(option);
+    const o = document.createElement("option");
+    o.value = opt;
+    datalist.appendChild(o);
   });
 
-  // Wrap input + datalist in a container so they stay together
   const wrapper = document.createElement("div");
+  wrapper.className = "dropdown-wrapper";
   wrapper.appendChild(input);
   wrapper.appendChild(datalist);
 
   return wrapper;
 } // **************************************************************************************
 
+
 /* 
 Constructs the table based on the selected configuration/fighter options
 */
 function buildSpreadsheet() {
   const table = document.getElementById("spreadsheetTable");
-
-  // Make sure table is NOT editable (remove any leftover attribute)
   table.removeAttribute("contenteditable");
   table.contentEditable = "false";
 
@@ -93,7 +90,7 @@ function buildSpreadsheet() {
 
   table.innerHTML = "";
 
-  // --- Compute total columns ---
+  // --- Compute total columns (fighters + {e}) ---
   let totalCols = 0;
   if (numFighters === 2) {
     totalCols = fighterOptions.reduce((a, b) => a + b + 1, 0) + 1; // +1 shared {e}
@@ -101,30 +98,31 @@ function buildSpreadsheet() {
     totalCols = fighterOptions.reduce((a, b) => a + b + 2, 0); // footwork + {e} + hands
   }
 
-  // --- Row 1: Author (left), Title (center), Date (right) ---
+  // Add 2 extra columns: Row # (left) and Notes (right)
+  totalCols += 2;
+
+  // --- Row 1: Author | Title | Date ---
   const headerRow = table.insertRow();
-  
   const authorCell = headerRow.insertCell();
   authorCell.innerText = `Author(s): ${author}`;
   authorCell.style.textAlign = "left";
   authorCell.style.borderBottom = "2px solid black";
   authorCell.style.padding = "8px";
-  authorCell.contentEditable = "true"; // editable
-  
+  authorCell.contentEditable = "true";
+
   const titleCell = headerRow.insertCell();
-  titleCell.colSpan = totalCols - 2; // take up middle space
+  titleCell.colSpan = totalCols - 2;
   titleCell.innerHTML = `<strong>${title}</strong>`;
   titleCell.style.textAlign = "center";
   titleCell.style.borderBottom = "2px solid black";
   titleCell.style.padding = "8px";
-  titleCell.contentEditable = "true"; // editable
-  
+  titleCell.contentEditable = "true";
+
   const dateCell = headerRow.insertCell();
   dateCell.innerText = dateStr;
   dateCell.style.textAlign = "right";
   dateCell.style.borderBottom = "2px solid black";
   dateCell.style.padding = "8px";
-
 
   // --- Spacer row ---
   const spacerRow = table.insertRow();
@@ -135,13 +133,22 @@ function buildSpreadsheet() {
 
   // --- Fighter headers ---
   const fighterRow = table.insertRow();
+
+  // Leftmost "#"
+  const numHead = fighterRow.insertCell();
+  numHead.rowSpan = 2;
+  numHead.innerText = "#";
+  numHead.style.border = "2px solid black";
+  numHead.style.textAlign = "center";
+  numHead.style.width = "30px";
+
   if (numFighters === 2) {
     const f1 = fighterRow.insertCell();
     f1.colSpan = fighterOptions[0] + 1;
     f1.innerText = "Fighter 1";
     f1.style.border = "2px solid black";
     f1.style.textAlign = "center";
-    f1.contentEditable = "true"; 
+    f1.contentEditable = "true";
 
     const eCell = fighterRow.insertCell();
     eCell.rowSpan = 2;
@@ -154,7 +161,7 @@ function buildSpreadsheet() {
     f2.innerText = "Fighter 2";
     f2.style.border = "2px solid black";
     f2.style.textAlign = "center";
-    f2.contentEditable = "true"; 
+    f2.contentEditable = "true";
   } else {
     for (let i = 0; i < numFighters; i++) {
       const f = fighterRow.insertCell();
@@ -162,13 +169,24 @@ function buildSpreadsheet() {
       f.innerText = `Fighter ${i + 1}`;
       f.style.border = "2px solid black";
       f.style.textAlign = "center";
-      f.contentEditable = "true"; 
+      f.contentEditable = "true";
     }
   }
 
+  // Rightmost "Notes"
+  const notesHead = fighterRow.insertCell();
+  notesHead.rowSpan = 2;
+  notesHead.innerText = "Notes";
+  notesHead.style.border = "2px solid black";
+  notesHead.style.textAlign = "center";
+  notesHead.style.width = "200px";
+
   // --- Sub-header row ---
   const subHeaderRow = table.insertRow();
-  const colTypes = []; // track column types
+  const colTypes = [];
+
+  // Add rowNum as first col type
+  colTypes.push("rowNum");
 
   if (numFighters === 2) {
     ["Footwork", ...Array.from({ length: fighterOptions[0] }, (_, i) => `Hand ${i + 1}`)]
@@ -181,7 +199,7 @@ function buildSpreadsheet() {
         cell.contentEditable = "true";
       });
 
-    colTypes.push("e"); // shared {e}
+    colTypes.push("e");
 
     ["Footwork", ...Array.from({ length: fighterOptions[1] }, (_, i) => `Hand ${i + 1}`)]
       .forEach(c => {
@@ -206,46 +224,36 @@ function buildSpreadsheet() {
     });
   }
 
-  // --- Example blank rows (dropdowns only, no contentEditable on td) ---
+  // Append notes col type last
+  colTypes.push("notes");
+
+  // --- Example blank rows ---
   for (let r = 0; r < 10; r++) {
     const row = table.insertRow();
     for (let c = 0; c < totalCols; c++) {
       const cell = row.insertCell();
-
-      // ensure td itself is NOT editable
-      cell.contentEditable = "false";
       cell.style.border = "1px solid gray";
       cell.style.padding = "4px";
+      cell.contentEditable = "false";
 
-      // append the dropdown wrapper (createDropdown returns a wrapper DIV with input + datalist)
-      if (colTypes[c] === "footwork") {
+      if (colTypes[c] === "rowNum") {
+        cell.innerText = r + 1;
+        cell.style.textAlign = "center";
+        cell.style.fontWeight = "bold";
+      } else if (colTypes[c] === "footwork") {
         const wrapper = createDropdown(footworkOptions);
-        // make the actual input fill the cell
-        const input = wrapper.querySelector("input[list]");
-        if (input) {
-          input.style.width = "100%";
-          input.style.boxSizing = "border-box";
-        }
+        wrapper.querySelector("input[list]").style.width = "100%";
         cell.appendChild(wrapper);
       } else if (colTypes[c] === "hand") {
         const wrapper = createDropdown(handOptions);
-        const input = wrapper.querySelector("input[list]");
-        if (input) {
-          input.style.width = "100%";
-          input.style.boxSizing = "border-box";
-        }
+        wrapper.querySelector("input[list]").style.width = "100%";
         cell.appendChild(wrapper);
       } else if (colTypes[c] === "e") {
         const wrapper = createDropdown(eOptions);
-        const input = wrapper.querySelector("input[list]");
-        if (input) {
-          input.style.width = "100%";
-          input.style.boxSizing = "border-box";
-        }
+        wrapper.querySelector("input[list]").style.width = "100%";
         cell.appendChild(wrapper);
-      } else {
-        // unknown type: keep non-editable blank
-        cell.innerText = "";
+      } else if (colTypes[c] === "notes") {
+        cell.contentEditable = "true";
       }
     }
   }
@@ -254,64 +262,148 @@ function buildSpreadsheet() {
 /* 
 Exports the table to an excel (.xlsx) file
 */
-function exportSpreadsheet() {
+async function exportSpreadsheet() {
   const table = document.getElementById("spreadsheetTable");
-
-  // Build array of arrays from the table
-  const sheetData = [];
-  for (let row of table.rows) {
-    const rowData = [];
-    for (let cell of row.cells) {
-      let value = "";
-
-      // If the cell has a datalist-based input
-      const input = cell.querySelector("input[list]");
-      if (input) {
-        value = input.value.trim(); // either typed or selected option
-      }
-      // If the cell has a <select> (legacy case)
-      else {
-        const select = cell.querySelector("select");
-        if (select) {
-          value = select.options[select.selectedIndex]?.text || "";
-        } else {
-          value = cell.innerText.trim();
-        }
-      }
-
-      rowData.push(value);
-    }
-    sheetData.push(rowData);
+  if (!table) {
+    alert("Spreadsheet table not found.");
+    return;
   }
 
-  // Convert array to worksheet
-  const ws = XLSX.utils.aoa_to_sheet(sheetData);
-
-  // Create a workbook and append sheet
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Fight Sheet");
-
-  // --- Grab fight title from first row, center cell ---
+  // --- filename from title cell (robust) ---
   let fightTitle = "Fight";
   if (table.rows.length > 0) {
     const headerRow = table.rows[0];
-    const middleCellIndex = Math.floor(headerRow.cells.length / 2);
-    fightTitle = headerRow.cells[middleCellIndex].innerText.trim() || "Fight";
+    // prefer a <strong> title cell, otherwise fall back to middle cell
+    let found = false;
+    for (let i = 0; i < headerRow.cells.length; i++) {
+      const hc = headerRow.cells[i];
+      if (hc.querySelector && hc.querySelector("strong")) {
+        fightTitle = hc.innerText.trim() || fightTitle;
+        found = true;
+        break;
+      }
+    }
+    if (!found) {
+      const mid = Math.floor(headerRow.cells.length / 2);
+      fightTitle = (headerRow.cells[mid] && headerRow.cells[mid].innerText.trim()) || fightTitle;
+    }
   }
-
-  // Sanitize filename
   fightTitle = fightTitle.replace(/[^a-z0-9_\-]/gi, "_");
-
-  // Suggest filename to user
   let filename = prompt("Enter filename for export:", `SPAR_${fightTitle}.xlsx`);
   if (!filename) return;
+  if (!filename.endsWith(".xlsx")) filename += ".xlsx";
 
-  if (!filename.endsWith(".xlsx")) {
-    filename += ".xlsx";
-  }
+  // --- ExcelJS workbook/sheet (ExcelJS must be loaded before this script) ---
+  const workbook = new ExcelJS.Workbook();
+  const sheet = workbook.addWorksheet("Fight Sheet");
 
-  XLSX.writeFile(wb, filename);
-}
+  // occupied map for cells already covered by a rowspan/colspan merge
+  const occupied = {}; // keys like "row,col" set to true
+
+  for (let r = 0; r < table.rows.length; r++) {
+    const htmlRow = table.rows[r];
+    const sheetRow = sheet.getRow(r + 1);
+
+    // excel column pointer for this DOM row (1-based)
+    let excelCol = 1;
+
+    for (let j = 0; j < htmlRow.cells.length; j++) {
+      // skip columns already occupied by previous merges
+      while (occupied[`${r + 1},${excelCol}`]) excelCol++;
+
+      const htmlCell = htmlRow.cells[j];
+      const startRow = r + 1;
+      const startCol = excelCol;
+      const colspan = htmlCell.colSpan || 1;
+      const rowspan = htmlCell.rowSpan || 1;
+      const excelCell = sheetRow.getCell(startCol);
+
+      // --- value (input[list], select, or plain text) ---
+      let value = "";
+      const input = htmlCell.querySelector("input[list]");
+      if (input) {
+        value = input.value.trim();
+      } else {
+        const select = htmlCell.querySelector("select");
+        value = select ? (select.options[select.selectedIndex]?.text || "") : htmlCell.innerText.trim();
+      }
+      excelCell.value = value;
+
+      // --- styles (font / fill / alignment) ---
+      const style = window.getComputedStyle(htmlCell);
+      // alignment
+      excelCell.alignment = {
+        horizontal: (style.textAlign && style.textAlign !== "" ? style.textAlign : "center"),
+        vertical: "middle",
+        wrapText: true
+      };
+
+      // font
+      const fontObj = { ...(excelCell.font || {}) };
+      if (style.fontWeight === "700" || style.fontWeight === "bold") fontObj.bold = true;
+      if (style.textDecoration && style.textDecoration.includes("underline")) fontObj.underline = true;
+      if (style.color && !style.color.includes("transparent")) {
+        try { fontObj.color = { argb: rgbToHex(style.color) }; } catch (e) {}
+      }
+      if (Object.keys(fontObj).length) excelCell.font = fontObj;
+
+      // fill (background)
+      if (style.backgroundColor && !style.backgroundColor.includes("transparent") && !style.backgroundColor.includes("rgba(0, 0, 0, 0)")) {
+        try {
+          excelCell.fill = {
+            type: "pattern",
+            pattern: "solid",
+            fgColor: { argb: rgbToHex(style.backgroundColor) }
+          };
+        } catch (e) {}
+      }
+
+      // borders (thin grid)
+      excelCell.border = {
+        top:    { style: "thin", color: { argb: "FF000000" } },
+        left:   { style: "thin", color: { argb: "FF000000" } },
+        bottom: { style: "thin", color: { argb: "FF000000" } },
+        right:  { style: "thin", color: { argb: "FF000000" } }
+      };
+
+      // --- merges ---
+      if (colspan > 1 || rowspan > 1) {
+        const endRow = startRow + rowspan - 1;
+        const endCol = startCol + colspan - 1;
+        sheet.mergeCells(startRow, startCol, endRow, endCol);
+
+        // mark spanned cells as occupied (so subsequent DOM cells won't be placed into those coords)
+        for (let rr = startRow; rr <= endRow; rr++) {
+          for (let cc = startCol; cc <= endCol; cc++) {
+            if (!(rr === startRow && cc === startCol)) occupied[`${rr},${cc}`] = true;
+          }
+        }
+      }
+
+      // advance excelCol by the logical width of this HTML cell
+      excelCol += colspan;
+    } // end cells loop
+  } // end rows loop
+
+  // --- final write and download ---
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+} 
+
+// helper: rgb()/rgba() -> ARGB hex (robust)
+function rgbToHex(rgb) {
+  if (!rgb) return "FF000000";
+  const m = rgb.match(/\d+/g);
+  if (!m) return "FF000000";
+  const r = Number(m[0]), g = Number(m[1]), b = Number(m[2]);
+  return ("FF" + [r,g,b].map(x => x.toString(16).padStart(2, "0")).join("")).toUpperCase();
+} // **************************************************************************************
 
 /*
 Adds a BLANK row to the bottom of the table with the same formatting as the previous bottom row
@@ -320,30 +412,52 @@ function addRow() {
   const table = document.getElementById("spreadsheetTable");
   if (table.rows.length < 1) return; // no rows yet
 
-  const templateRowIndex = table.rows.length - 2; // last data row index
+  const templateRowIndex = table.rows.length - 1; // last row (before Notes col)
   const templateRow = table.rows[templateRowIndex];
   const newRow = table.insertRow();
 
+  // figure out the new row number:
+  const newRowNumber = templateRowIndex - 2; 
+  // subtract: 1 header row, 1 subheader row -> then add 1
+
   for (let c = 0; c < templateRow.cells.length; c++) {
     const newCell = newRow.insertCell();
+    const templateCell = templateRow.cells[c];
+    newCell.style.cssText = templateCell.style.cssText || "";
     newCell.contentEditable = "false";
-    newCell.style.cssText = templateRow.cells[c].style.cssText || "";
 
-    // If template had an input[list], clone logic: find its datalist id and options
-    const templateInput = templateRow.cells[c].querySelector("input[list]");
+    // --- First column = row number ---
+    if (c === 0) {
+      newCell.innerText = newRowNumber;
+      newCell.style.textAlign = "center";
+      continue;
+    }
+
+    // --- Notes column (last col) ---
+    if (c === templateRow.cells.length - 1) {
+      newCell.contentEditable = "true";
+      newCell.innerText = "";
+      continue;
+    }
+
+    // --- Dropdown columns ---
+    const templateInput = templateCell.querySelector("input[list]");
     if (templateInput) {
       const listId = templateInput.getAttribute("list");
       const datalist = document.getElementById(listId);
       const options = datalist ? Array.from(datalist.options).map(o => o.value) : [];
       const wrapper = createDropdown(options);
       const input = wrapper.querySelector("input[list]");
-      if (input) { input.style.width = "100%"; input.style.boxSizing = "border-box"; }
+      if (input) {
+        input.style.width = "100%";
+        input.style.boxSizing = "border-box";
+      }
       newCell.appendChild(wrapper);
       continue;
     }
 
-    // legacy select handling
-    const templateSelect = templateRow.cells[c].querySelector("select");
+    // legacy <select>
+    const templateSelect = templateCell.querySelector("select");
     if (templateSelect) {
       const clone = templateSelect.cloneNode(true);
       clone.value = "";
@@ -351,7 +465,7 @@ function addRow() {
       continue;
     }
 
-    // default blank
+    // fallback
     newCell.innerText = "";
   }
 } // **************************************************************************************

@@ -96,7 +96,7 @@ footer {
   align-items: center;
   justify-content: center; /* center the header-center div */
   position: relative;      /* allows absolute positioning of left/right items */
-  padding: 10px 20px;
+  padding: 20px 20px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   margin-bottom: 20px;
   background: #fff;
@@ -104,6 +104,7 @@ footer {
 
 .app-header img {
   max-height: 50px;
+  width: auto;     
 }
 
 .header-left,
@@ -168,10 +169,34 @@ button.secondary:hover {
 
 /*  */
 
+/* keep dropdown wrapper constrained to the cell */
+.dropdown-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 0;
+}
+
+/* the actual input inside cells */
 .cell-dropdown {
   width: 100%;
-  padding: 6px;
+  box-sizing: border-box;
+  padding: 6px 8px;
   border: none;
   background: transparent;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  outline: none;
 }
+
+/* ensure table cells don't let their contents push them larger */
+#spreadsheetTable td, #spreadsheetTable th {
+  vertical-align: middle;
+  overflow: hidden;
+  max-width: 1px; /* allow cell to control width; Excel export preserves column widths separately if you set them later */
+}
+
+/* tweak notes column so it can expand visually in the browser (optional) */
+#spreadsheetTable td[contenteditable="true"] { min-width: 120px; }
