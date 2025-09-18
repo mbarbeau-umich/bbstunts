@@ -200,3 +200,12 @@ button.secondary:hover {
 
 /* tweak notes column so it can expand visually in the browser (optional) */
 #spreadsheetTable td[contenteditable="true"] { min-width: 120px; }
+
+.buttons-row {
+  text-align: center;
+}
+
+.buttons-row button {
+  display: inline-block;
+  margin: 5px 10px;
+}

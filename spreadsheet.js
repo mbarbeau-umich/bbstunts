@@ -145,7 +145,7 @@ function buildSpreadsheet() {
   if (numFighters === 2) {
     const f1 = fighterRow.insertCell();
     f1.colSpan = fighterOptions[0] + 1;
-    f1.innerText = "Fighter 1";
+    f1.innerText = "Combatant 1";
     f1.style.border = "2px solid black";
     f1.style.textAlign = "center";
     f1.contentEditable = "true";
@@ -158,7 +158,7 @@ function buildSpreadsheet() {
 
     const f2 = fighterRow.insertCell();
     f2.colSpan = fighterOptions[1] + 1;
-    f2.innerText = "Fighter 2";
+    f2.innerText = "Combatant 2";
     f2.style.border = "2px solid black";
     f2.style.textAlign = "center";
     f2.contentEditable = "true";
@@ -166,7 +166,7 @@ function buildSpreadsheet() {
     for (let i = 0; i < numFighters; i++) {
       const f = fighterRow.insertCell();
       f.colSpan = fighterOptions[i] + 2;
-      f.innerText = `Fighter ${i + 1}`;
+      f.innerText = `Combatant ${i + 1}`;
       f.style.border = "2px solid black";
       f.style.textAlign = "center";
       f.contentEditable = "true";
@@ -408,27 +408,90 @@ function rgbToHex(rgb) {
 /*
 Adds a BLANK row to the bottom of the table with the same formatting as the previous bottom row
 */
+// ---------- helpers ----------
+function findSubHeaderIndex(table) {
+  for (let i = 0; i < table.rows.length; i++) {
+    for (const cell of table.rows[i].cells) {
+      const t = (cell.textContent || "").trim();
+      if (/^Footwork$/i.test(t) || /^Hand\s*\d+/i.test(t) || t === "{e}") return i;
+    }
+  }
+  return -1;
+}
+
+function getColTypes(table) {
+  // returns full column types array: ['rowNum', ...middleCols..., 'notes']
+  const subIdx = findSubHeaderIndex(table);
+  if (subIdx === -1) return []; // fail safe
+
+  const subRow = table.rows[subIdx];
+  const middle = [];
+  for (let i = 0; i < subRow.cells.length; i++) {
+    const txt = (subRow.cells[i].textContent || "").trim();
+    if (txt === "" || txt === "{e}") {
+      middle.push("e");
+    } else if (/^Footwork$/i.test(txt)) {
+      middle.push("footwork");
+    } else if (/^Hand\s*\d+/i.test(txt)) {
+      middle.push("hand");
+    } else {
+      // unknown: keep blank cell
+      middle.push("unknown");
+    }
+  }
+  return ["rowNum", ...middle, "notes"];
+}
+
+function renumberMoves(table) {
+  const subIdx = findSubHeaderIndex(table);
+  if (subIdx === -1) return;
+
+  // data rows begin AFTER the subheader row
+  let move = 1;
+  for (let r = subIdx + 2; r < table.rows.length; r++) {
+    const firstCell = table.rows[r].cells[0];
+    if (!firstCell) continue;
+
+    const txt = (firstCell.textContent || "").trim();
+    if (txt === "BREAK") {
+      // skip numbering BREAK rows
+      continue;
+    } else {
+      firstCell.textContent = move;
+      move++;
+    }
+  }
+}
+
+// ---------- new addRow ----------
 function addRow() {
   const table = document.getElementById("spreadsheetTable");
-  if (table.rows.length < 1) return; // no rows yet
+  if (table.rows.length < 1) return;
 
-  const templateRowIndex = table.rows.length - 1; // last row (before Notes col)
+  // Find the last non-BREAK row after the subheader
+  let templateRowIndex = -1;
+  for (let i = table.rows.length - 1; i >= 0; i--) {
+    const firstCell = table.rows[i].cells[0];
+    if (firstCell && firstCell.textContent.trim() !== "BREAK") {
+      templateRowIndex = i;
+      break;
+    }
+  }
+  if (templateRowIndex === -1) return; // no valid template row
+
   const templateRow = table.rows[templateRowIndex];
   const newRow = table.insertRow();
-
-  // figure out the new row number:
-  const newRowNumber = templateRowIndex - 2; 
-  // subtract: 1 header row, 1 subheader row -> then add 1
 
   for (let c = 0; c < templateRow.cells.length; c++) {
     const newCell = newRow.insertCell();
     const templateCell = templateRow.cells[c];
+
     newCell.style.cssText = templateCell.style.cssText || "";
     newCell.contentEditable = "false";
 
     // --- First column = row number ---
     if (c === 0) {
-      newCell.innerText = newRowNumber;
+      newCell.innerText = ""; // will be set by renumberMoves
       newCell.style.textAlign = "center";
       continue;
     }
@@ -456,7 +519,7 @@ function addRow() {
       continue;
     }
 
-    // legacy <select>
+    // Legacy <select>
     const templateSelect = templateCell.querySelector("select");
     if (templateSelect) {
       const clone = templateSelect.cloneNode(true);
@@ -468,6 +531,48 @@ function addRow() {
     // fallback
     newCell.innerText = "";
   }
+
+  // Fix move numbering
+  renumberMoves(table);
+}
+
+// ---------- new addBreak ----------
+function addBreak() {
+  const table = document.getElementById("spreadsheetTable");
+  if (!table || table.rows.length < 1) return;
+
+  const colTypes = getColTypes(table);
+  if (!colTypes || colTypes.length === 0) return;
+
+  // Step 1: append a proper blank choreography row (so subsequent addRow continues normally)
+  addRow();
+
+  // Step 2: insert BREAK row immediately before that newly added row
+  const insertIndex = table.rows.length - 1; // before last row
+  const breakRow = table.insertRow(insertIndex);
+
+  for (let c = 0; c < colTypes.length; c++) {
+    const type = colTypes[c];
+    const cell = breakRow.insertCell();
+    cell.style.border = "1px solid #aaa";
+    cell.style.padding = "4px";
+    cell.style.backgroundColor = "#ddd";
+    cell.contentEditable = "false";
+
+    if (type === "rowNum") {
+      cell.textContent = "BREAK";
+      cell.style.textAlign = "center";
+      cell.style.fontWeight = "bold";
+    } else if (type === "notes") {
+      cell.contentEditable = "true";
+      cell.textContent = "";
+    } else {
+      cell.textContent = "";
+    }
+  }
+
+  // finally, renumber moves (BREAK rows are ignored)
+  renumberMoves(table);
 } // **************************************************************************************
 
 /* 

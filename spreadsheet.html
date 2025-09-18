@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Spreadsheet Editor</title>
+  <link rel="icon" href="favicon.png" type="image/png">
   <link rel="stylesheet" href="spreadsheet.css">
 </head>
 <body>
@@ -23,9 +24,11 @@
     <table id="spreadsheetTable" contenteditable="true"></table>
   </div>
 
-  <div class="spreadsheet-container">
-    <button class="secondary" onclick="addRow()">+ Add Row</button>
+  <div class="spreadsheet-container buttons-row">
+    <button class="secondary" onclick="addBreak()">+ Break</button>
+    <button class="secondary" onclick="addRow()">+ Row</button>
   </div>
+
 
 <!-- 1. First load SheetJS library (from CDN) -->
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script> -->

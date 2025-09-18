@@ -1,5 +1,17 @@
-Punch
-Block
-Parry
-Slash
-Thrust
+Attack 1
+Attack 2
+Attack 3
+Attack 4 
+Attack 5
+Parry 1
+Parry 2
+Parry 3
+Parry 4
+Parry 5
+Universal Parry
+Parry 5 base
+Parry 5B
+Lunge
+Punta roversa
+Punta mandritta
+Corpse-a-corpse

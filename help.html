@@ -3,25 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <title>SPAR Help / About</title>
+  <link rel="icon" href="favicon.png" type="image/png">
   <link rel="stylesheet" href="index.css">
   <style>
     body {
       font-family: Arial, sans-serif;
-      max-width: 800px;
+      max-width: 900px;
       margin: 2rem auto;
       padding: 0 1rem;
-      line-height: 1.5;
+      line-height: 1.6;
     }
     h1, h2 {
       text-align: center;
-      color: #2e8b57; /* match your hyperlinks */
+      color: #2e8b57;
     }
-    a {
-      color: #2e8b57; /* same green */
-      text-decoration: underline;
+    h3 {
+      text-align: left;
+      color: #2e8b57;
+      margin-bottom: 0.5rem;
     }
     section {
-      margin-bottom: 2rem;
+      margin-bottom: 2.5rem;
+      padding: 1rem;
+      border-left: 4px solid #2e8b57;
+      border-right: 4px solid #2e8b57;
+      background: #f9f9f9;
+      border-radius: 6px;
+    }
+    a {
+      color: #2e8b57;
+      text-decoration: underline;
+    }
+    ol, ul {
+      margin-left: 1.5rem;
     }
     footer {
       text-align: center;
@@ -36,42 +50,115 @@
   <img src="BB_logo.png" alt="Brothers Barbeau Logo" style="display: block; margin: 0 auto; height: 80px;">
 
   <h1>SPAR</h1>
-  <h2>Stunt Planning And Recording - Help / About</h2>
+  <h2>Stunt Planning And Recording – Help & About</h2>
 
   <section>
-    <h3>Authors</h3>
-    <p>This tool was created by the <strong>Brothers Barbeau Stunt Team</strong>.</p>
+    <h3>About SPAR</h3>
+    <p>
+      <strong>SPAR</strong> was created out of the need for a simple way to document choreography 
+      without breaking flow. As performers, we found it frustrating to swap a sword for a clipboard 
+      or laptop every few moves just to take notes. We wanted something that could be used one-handed, 
+      even on a phone, while holding a weapon in the other hand. 
+    </p>
+    <p>
+      This tool is the result — fast, repeatable, consistent, and designed specifically for the unique 
+      demands of stunt performance and fight choreography.
+    </p>
   </section>
 
   <section>
     <h3>Purpose</h3>
-    <p>SPAR is designed to help choreograph, document, and log fight sequences for stunts, including footwork, hand moves, and stage directions. You can plan fights, track moves, and export the data to Excel for sharing or archiving.</p>
+    <p>
+      SPAR is designed to choreograph, document, and archive fight sequences, 
+      covering footwork, weapon choreography, direction of energy, and stage direction. 
+      It provides a clean, structured way to record complex custom choreography while remaining easy 
+      enough to use during live rehearsals.
+    </p>
   </section>
 
   <section>
     <h3>Usage Instructions</h3>
+    <h4>When to use</h4>
+    <p>SPAR is best suited for documenting staged fight choreography between <strong>2–5 combatants</strong>.</p>
+
+    <h4>Setup</h4>
     <ol>
-      <li>Go to the <a href="index.html">setup page</a> and enter the fight details.</li>
-      <li>Specify the number of fighters and their hand options.</li>
-      <li>Click "Go" to open the spreadsheet.</li>
-      <li>Use the drop-downs or type directly to record moves.</li>
-      <li>Click "Export" to save the spreadsheet as an Excel file. Filename defaults to the fight title.</li>
-      <li>Add rows as needed with the "Add Row" button.</li>
+      <li>Open the <a href="index.html">setup page</a>.</li>
+      <li>Enter the <strong>fight name</strong> (editable later in the spreadsheet).</li>
+      <li>Enter the <strong>author(s)</strong>.</li>
+      <li>Select the number of combatants (not editable once set).</li>
+      <li>For each fighter, configure:
+        <ul>
+          <li><strong>Hands</strong> – number of weapon columns required (1–4).</li>
+          <li><strong>Weapon class</strong> – determines dropdown options (custom text is always allowed).</li>
+        </ul>
+      </li>
+      <li>Click <strong>Go</strong> to build the fight spreadsheet.</li>
     </ol>
+
+    <!-- <h4>Recording</h4>
+    <ul>
+      <li><strong>Footwork</strong> – movement, orientation, and steps.</li>
+      <li><strong>Hand #</strong> – weapon or attack actions.</li>
+      <li><strong>{e}</strong> – “direction of energy,” meaning how the combatant is leaning or what story/emotion motivates the move.</li>
+      <li><strong>Notes</strong> – extra comments, context, or instructions.</li>
+    </ul>
+
+    <p>Use <strong>Add Row</strong> to continue adding choreography steps. 
+    Use <strong>Add Break</strong> to insert a shaded divider row (for dialogue, beat breaks, or blocks of choreography).</p> -->
+  <h4>Recording</h4>
+
+  <p>The fight spreadsheet is divided into structured columns. Here’s what each area represents:</p>
+  <ul>
+    <li><strong>Footwork</strong> – movement, orientation, and steps.</li>
+    <li><strong>Hand #</strong> – weapon or attack actions.</li>
+    <li><strong>{e}</strong> – “direction of energy,” meaning how the combatant is leaning or what story/emotion motivates the move.</li>
+    <li><strong>Notes</strong> – extra comments, context, or instructions.</li>
+  </ul>
+
+  <!-- Screenshot placeholder -->
+  <div style="text-align: center; margin: 1rem 0;">
+    <img src="spreadsheet_example.png" alt="Annotated SPAR spreadsheet with labeled columns for Footwork, Hand, {e}, and Notes" style="max-width: 50%; border: 1px solid #ccc; border-radius: 6px;">
+    <p style="font-size: 0.9rem; color: #555; margin-top: 0.5rem;">
+      Example layout of the SPAR spreadsheet.
+    </p>
+  </div>
+
+  <p>Use <strong>Add Row</strong> to continue adding choreography steps. 
+  Use <strong>Add Break</strong> to insert a shaded divider row (for dialogue, beat breaks, or blocks of choreography).</p>
+
+    <h4>Exporting</h4>
+    <p>Click <strong>Export</strong> to save your fight as an Excel (.xlsx) file. The default filename comes from your fight title, but you can rename it before saving.</p>
+
+    <h4>Important Note</h4>
+    <p>
+      SPAR <strong>does not save your work automatically</strong>. Closing or refreshing the page will clear your choreography. 
+      Save early, save often!
+    </p>
   </section>
 
   <section>
     <h3>Feedback / Bugs</h3>
-    <p>If you encounter issues or have suggestions, please email us at <a href="mailto:thebrothersbarbeau@gmail.com">thebrothersbarbeau@gmail.com</a>.</p>
+    <p>
+      If you encounter issues, have suggestions, or simply want to share how you use SPAR, 
+      please fill out the <a href="https://forms.gle/We1pN5A5YFKbH4xSA">Feedback Form</a> or email us at <a href="mailto:thebrothersbarbeau@gmail.com">thebrothersbarbeau@gmail.com</a>.
+    </p>
   </section>
 
   <section>
-    <h3>Tips</h3>
-    <ul>
-      <li>Keep consistent naming for moves to make filtering/exporting easier.</li>
-      <li>You can edit headers like "Author", "Title", and "Fighter #" directly in the spreadsheet.</li>
-      <li>Use the left/right arrow keys to navigate between cells quickly.</li>
-    </ul>
+    <h3>Free Use</h3>
+    <p>
+      SPAR was built for our own stunt team, but it is free for anyone to use. If SPAR helps your team, 
+      let us know! Feedback is always appreciated, and kind words go a long way. 
+    </p>
+    <p>
+      Building, maintaining, and hosting SPAR takes time and resources, so if your team benefits from it, 
+      we welcome donations — but encouragement and stories of how you’ve used it are just as valuable.
+    </p>
+    <p>
+      If your team is interested in a similar tool customized for your workflow, 
+      we are open to collaborating on tailored versions of SPAR.
+    </p>
   </section>
 
   <footer>

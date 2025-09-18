@@ -12,7 +12,7 @@ function updateFighterOptions() {
     wrapper.className = "fighter-option";
 
     const label = document.createElement("label");
-    label.innerText = `Fighter ${i + 1} – Hands: `;
+    label.innerText = `Combatant ${i + 1} – Hands: `;
 
     const input = document.createElement("input");
     input.type = "number";
