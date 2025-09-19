@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Fight Setup</title>
+  <title>SPAR: Setup</title>
   <link rel="icon" href="favicon.png" type="image/png">
   <link rel="stylesheet" href="index.css">
 </head>
@@ -21,7 +21,14 @@
   <input type="text" id="fightName" placeholder="Enter fight title">
 
   <label for="numFighters">Number of Combatants:</label>
-  <input type="number" id="numFighters" min="2" max="5" value="2" onchange="updateFighterOptions()">
+  <!-- <input type="number" id="numFighters" min="2" max="5" value="2" onchange="updateFighterOptions()"> -->
+  <select id="numFighters" onchange="updateFighterOptions()">
+    <option value="2" selected>2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+  </select>
+
 
   <div id="fighterOptions"></div>
 

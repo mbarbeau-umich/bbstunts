@@ -18,8 +18,9 @@
 
 /* FIGHT OPTIONS */
 .fighter-option {
-  display: flex;
+  /* display: flex; */
   align-items: center;
+  min-width: 120px;
   margin: 8px 0;
   gap: 8px;
 }
@@ -27,6 +28,7 @@
 .fighter-option input[type="number"],
 #numFighters {
   width: 60px;
+  min-width: 120px;
   padding: 4px;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -108,24 +110,3 @@ button.secondary { background: #eee; }
 .app-header h2 { margin: 0; }
 /* HEADER --> END */
 
-/* table {
-  border-collapse: collapse;
-  width: 100%;
-  text-align: center;
-  background: #fff;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-} */
-
-/* th, td {
-  border: 1px solid #ccc;
-  padding: 12px;
-  min-width: 80px;
-}
-
-th { background: #f4f4f4; } */
-
-/* .table-title {
-  font-size: 1.5em;
-  font-weight: bold;
-  text-align: center;
-} */

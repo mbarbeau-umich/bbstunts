@@ -133,12 +133,14 @@ footer {
 }
 
 table {
-  border-collapse: collapse;
+  border-collapse: separate;   /* allows sticky rows to keep their own borders */
+  border-spacing: 0;           /* still keep cells touching */
   width: 100%;
   text-align: center;
   background: #fff;
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
+
 
 th, td {
   border: 1px solid #ccc;
@@ -192,10 +194,11 @@ button.secondary:hover {
 }
 
 /* ensure table cells don't let their contents push them larger */
-#spreadsheetTable td, #spreadsheetTable th {
+ #spreadsheetTable td, #spreadsheetTable th {
   vertical-align: middle;
-  overflow: hidden;
-  max-width: 1px; /* allow cell to control width; Excel export preserves column widths separately if you set them later */
+  overflow: visible;   /* allow shadows/dividers to draw outside the cell */
+  max-width: none;
+  white-space: nowrap; /* keep content tidy if you want */
 }
 
 /* tweak notes column so it can expand visually in the browser (optional) */
@@ -208,4 +211,28 @@ button.secondary:hover {
 .buttons-row button {
   display: inline-block;
   margin: 5px 10px;
+}
+
+
+/* STICKY HEADER */
+
+/* Fighter header row (Combatant 1, Combatant 2, etc.) */
+#spreadsheetTable tr.header-fighter td {
+  position: sticky;
+  top: 0;                 /* sits at top of scrolling viewport */
+  z-index: 30;            /* above subheader and body rows */
+  background: #fff;
+  /* keep border for look + add shadow for a crisp divider */
+  border-bottom: 1px solid rgba(0,0,0,0.85);
+  /* box-shadow: 0 3px 0 rgba(0,0,0,1); visible black line below the row */
+}
+
+/* Sub-header row (Footwork, Hand, {e}, Notes) */
+#spreadsheetTable tr.header-sub td {
+  position: sticky;
+  top: 46px;              /* adjust if your fighter row height is different */
+  z-index: 25;
+  background: #fff;
+  border-bottom: 1px solid rgba(0,0,0,0.85);
+  /* box-shadow: 0 2px 0 rgba(0,0,0,1); slightly smaller shadow below subheader */
 }
